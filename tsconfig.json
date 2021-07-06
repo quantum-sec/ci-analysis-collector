@@ -1,6 +1,7 @@
 {
   "extends": "@quantum-sec/typescript-config",
   "compilerOptions": {
-    "types": ["node", "jasmine"]
+    "esModuleInterop": true,
+    "resolveJsonModule": true
   }
 }

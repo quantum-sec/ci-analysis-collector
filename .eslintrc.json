@@ -1,0 +1,12 @@
+{
+  "root": true,
+  "extends": [
+    "@quantum-sec/eslint-config-typescript"
+  ],
+  "parserOptions": {
+    "project": ["tsconfig.json"]
+  },
+  "ignorePatterns": [
+    "**/dist/**/*.ts"
+  ]
+}
