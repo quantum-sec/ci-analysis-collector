@@ -1,0 +1,45 @@
+{
+  "name": "@quantum-sec/template-typescript-npm-package",
+  "version": "0.0.0-development",
+  "description": "{{package_description}}",
+  "scripts": {
+    "clean": "rm -rf ./dist/",
+    "build": "npm run clean && tsc --build --extendedDiagnostics",
+    "postbuild": "find ./dist/ -type f -name '*.spec.*' -delete",
+    "lint": "eslint . --ext .ts",
+    "test:jasmine": "jasmine-ts --config=jasmine.json",
+    "test:coverage": "nyc npm run test:jasmine",
+    "test": "npm run test:coverage -s"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:quantum-sec/template-typescript-npm-package.git"
+  },
+  "author": "Quantum Security Pte. Ltd.",
+  "license": "SEE LICENSE IN LICENSE",
+  "main": "dist/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^1.0.1",
+    "@quantum-sec/eslint-config-typescript": "^1.0.10",
+    "@quantum-sec/nyc-config-typescript": "^1.1.2",
+    "@quantum-sec/typescript-config": "^1.0.4",
+    "@types/jasmine": "^3.5.1",
+    "@types/node": "^14.14.41",
+    "@typescript-eslint/eslint-plugin": "^2.17.0",
+    "@typescript-eslint/parser": "^2.17.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-eslint-comments": "^3.1.2",
+    "eslint-plugin-import": "^2.20.0",
+    "jasmine": "^3.5.0",
+    "jasmine-reporters": "^2.3.2",
+    "jasmine-spec-reporter": "^4.2.1",
+    "jasmine-ts": "^0.3.0",
+    "jasmine-ts-console-reporter": "^3.1.1",
+    "nyc": "^15.0.0",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.7.5"
+  }
+}

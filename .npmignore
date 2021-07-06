@@ -1,0 +1,9 @@
+.github/
+.nycrc
+.pre-commit-config.yaml
+.releaserc.json
+.tools/
+azure-pipelines.yml
+jasmine.json
+junit/
+tsconfig.json

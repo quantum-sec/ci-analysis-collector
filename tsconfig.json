@@ -1,0 +1,6 @@
+{
+  "extends": "@quantum-sec/typescript-config",
+  "compilerOptions": {
+    "types": ["node", "jasmine"]
+  }
+}

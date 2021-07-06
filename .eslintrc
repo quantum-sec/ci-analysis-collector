@@ -1,0 +1,3 @@
+{
+  "extends": "@quantum-sec/eslint-config-typescript"
+}

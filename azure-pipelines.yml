@@ -1,0 +1,21 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+      - feature/*
+      - fix/*
+
+pr: none
+
+resources:
+  repositories:
+    - repository: pipeline-library
+      type: github
+      endpoint: quantum-sec-github
+      name: quantum-sec/pipeline-library
+
+jobs:
+  - template: templates/jobs/typescript.yml@pipeline-library
+    parameters:
+      runFunctionalTests: false
