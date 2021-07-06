@@ -1,7 +1,7 @@
 {
-  "name": "@quantum-sec/template-typescript-npm-package",
+  "name": "@quantum-sec/ci-analysis-collector",
   "version": "0.0.0-development",
-  "description": "{{package_description}}",
+  "description": "Utility library used to collect security analysis results and upload them for correlation and reporting in the Quantum Security platform.",
   "scripts": {
     "clean": "rm -rf ./dist/",
     "build": "npm run clean && tsc --build --extendedDiagnostics",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:quantum-sec/template-typescript-npm-package.git"
+    "url": "git@github.com:quantum-sec/ci-analysis-collector.git"
   },
   "author": "Quantum Security Pte. Ltd.",
   "license": "SEE LICENSE IN LICENSE",
