@@ -14,15 +14,13 @@
   "scripts": {
     "clean": "rm -rf ./dist/",
     "build": "npm run clean && tsc --build --extendedDiagnostics",
-    "build:package": "jq 'del(.scripts) | del(.devDependencies)' < package.json > dist/package.json",
     "build:cleanup": "find ./dist/ -type f -name '*.spec.*' -delete",
-    "build:flatten": "cp -R ./dist/src/ ./dist/ && rm -rf ./dist/src/",
-    "build:exec": "chmod +x ./dist/index.js",
+    "build:chmod": "chmod +x ./dist/index.js",
     "lint": "eslint ./src/ --ext .ts",
     "test:jasmine": "jasmine-ts --config=jasmine.json",
     "test:coverage": "nyc npm run test:jasmine",
     "test": "npm run test:coverage -s",
-    "postbuild": "npm run build:cleanup && npm run build:package && npm run build:flatten && npm run build:exec",
+    "postbuild": "npm run build:cleanup && npm run build:chmod",
     "prepublishOnly": "npm run build"
   },
   "license": "Apache-2.0",

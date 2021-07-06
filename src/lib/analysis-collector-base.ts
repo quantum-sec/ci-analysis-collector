@@ -4,7 +4,6 @@ import { v4 as uuid } from 'uuid';
 import cp from 'child_process';
 import chalk from 'chalk';
 import { CheckResult } from './check-result';
-import manifest from '../../package.json';
 
 export abstract class AnalysisCollectorBase {
 
@@ -16,14 +15,10 @@ export abstract class AnalysisCollectorBase {
 
   public timestamp: Date;
 
-  public collectorVersion: string;
-
   public constructor(public toolId: string, public logger: Logger) {
     this.traceId = uuid();
     this.timestamp = new Date();
     this.detectApiToken();
-
-    this.collectorVersion = manifest.version;
   }
 
   public async exec(options: any): Promise<void> {
@@ -114,7 +109,6 @@ export abstract class AnalysisCollectorBase {
       toolVersion: await this.getToolVersion(options),
       repositoryUrl: await this.getRepositoryUrl(options),
       commitHash: await this.getRepositoryHead(options),
-      collectorVersion: this.collectorVersion,
       results: results.map((result) => {
         result.checkName = undefined;
         return result;

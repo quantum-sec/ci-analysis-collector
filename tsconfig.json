@@ -1,7 +1,7 @@
 {
   "extends": "@quantum-sec/typescript-config",
   "compilerOptions": {
-    "esModuleInterop": true,
-    "resolveJsonModule": true
+    "rootDir": "src",
+    "esModuleInterop": true
   }
 }
