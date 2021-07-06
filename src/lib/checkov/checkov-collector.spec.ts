@@ -51,6 +51,7 @@ describe('CheckovCollector', () => {
     let raw: string;
 
     beforeEach(() => {
+      /* eslint-disable @typescript-eslint/naming-convention, camelcase */
       raw = JSON.stringify([{
         check_type: 'TEST_CHECK_TYPE',
         results: {
@@ -78,6 +79,7 @@ describe('CheckovCollector', () => {
           parsing_errors: [],
         },
       }]);
+      /* eslint-enable @typescript-eslint/naming-convention, camelcase */
     });
 
     it('should include all checks', () => {
@@ -90,8 +92,8 @@ describe('CheckovCollector', () => {
     });
   });
 
-  describe('createResult()', () => {
+  // describe('createResult()', () => {
 
-  });
+  // });
 
 });

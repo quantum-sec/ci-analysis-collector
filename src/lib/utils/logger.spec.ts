@@ -16,10 +16,11 @@ describe('Logger', () => {
     });
   });
 
-  function chalkFunctionEqualityTester(a, b): boolean | void {
+  function chalkFunctionEqualityTester(a, b): boolean | undefined {
     if (typeof a === 'function' && typeof b === 'function') {
       return a._styles.open === b._styles.open;
     }
+    return undefined;
   }
 
   function setupLoggerTest(method: string, color: any, logLevel: LogLevel): void {
