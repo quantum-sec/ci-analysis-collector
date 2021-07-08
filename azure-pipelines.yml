@@ -19,14 +19,15 @@ jobs:
   - template: templates/jobs/typescript.yml@pipeline-library
     parameters:
       runFunctionalTests: false
-  - template: templates/steps/deployment/deploy-container.yml@pipeline-library
-    parameters:
-      name: BuildContainer
-      displayName: Deploy Container to Docker Hub
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-      forceDeploy: true
-      serviceConnectionName: dockerhub-quantumcibot
-      repository: quantumsec/ci-analysis-collector
-      tags: |
-        latest
-        $(SEMVER)
+      deploySteps:
+        - template: templates/steps/deployment/deploy-container.yml@pipeline-library
+          parameters:
+            name: BuildContainer
+            displayName: Deploy Container to Docker Hub
+            condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+            forceDeploy: true
+            serviceConnectionName: dockerhub-quantumcibot
+            repository: quantumsec/ci-analysis-collector
+            tags: |
+              latest
+              $(SEMVER)
