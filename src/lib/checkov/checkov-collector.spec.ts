@@ -2,6 +2,7 @@ import { Logger } from '../utils';
 import { createLoggerFixture } from '../test/logger.fixture';
 import { CheckovCollector } from './checkov-collector';
 import { CheckResult } from '../check-result';
+import { IResult } from '../result.interface';
 
 describe('CheckovCollector', () => {
 
@@ -76,7 +77,11 @@ describe('CheckovCollector', () => {
             },
             resource: 'TEST_RESOURCE_ID_2',
           }],
-          parsing_errors: [],
+          parsing_errors: [{
+            check_result: {
+              result: 'ERRORED',
+            },
+          }],
         },
       }]);
       /* eslint-enable @typescript-eslint/naming-convention, camelcase */
@@ -92,8 +97,48 @@ describe('CheckovCollector', () => {
     });
   });
 
-  // describe('createResult()', () => {
+  describe('createResult()', () => {
 
-  // });
+    let check: any;
+    let result: IResult;
+
+    beforeEach(() => {
+      /* eslint-disable @typescript-eslint/naming-convention, camelcase */
+      check = {
+        check_id: 'TEST_CHECK_ID',
+        check_name: 'TEST_CHECK_NAME',
+        resource: 'module.example.test.',
+        file_path: '/test/file/path.tf',
+        file_line_range: [0, 99],
+      };
+      /* eslint-enable @typescript-eslint/naming-convention, camelcase */
+
+      result = collector.createResult(check, 'TEST_CHECK_TYPE', CheckResult.PASS);
+    });
+
+    it('should map check_id to checkId', () => {
+      expect(result.checkId).toEqual('TEST_CHECK_ID');
+    });
+
+    it('should map check_name to checkName', () => {
+      expect(result.checkName).toEqual('TEST_CHECK_NAME');
+    });
+
+    it('should pass through the check type', () => {
+      expect(result.checkType).toEqual('TEST_CHECK_TYPE');
+    });
+
+    it('should remove the trailing period from the resource ID', () => {
+      expect(result.resourceId).toEqual('module.example.test');
+    });
+
+    it('should map file_path to filePath', () => {
+      expect(result.filePath).toEqual('/test/file/path.tf');
+    });
+
+    it('should map file_line_range to fileLineRange using a 1-based index', () => {
+      expect(result.fileLineRange).toEqual([1, 100]);
+    });
+  });
 
 });

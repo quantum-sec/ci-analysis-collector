@@ -2,6 +2,13 @@ import { LogLevel } from './log-level.enum';
 import chalk from 'chalk';
 import { Logger } from './logger';
 
+export function chalkFunctionEqualityTester(a, b): boolean | undefined {
+  if (typeof a === 'function' && typeof b === 'function') {
+    return a._styles.open === b._styles.open;
+  }
+  return undefined;
+}
+
 describe('Logger', () => {
 
   let logger: Logger;
@@ -15,13 +22,6 @@ describe('Logger', () => {
       expect(logger.logLevel).toEqual(LogLevel.INFO);
     });
   });
-
-  function chalkFunctionEqualityTester(a, b): boolean | undefined {
-    if (typeof a === 'function' && typeof b === 'function') {
-      return a._styles.open === b._styles.open;
-    }
-    return undefined;
-  }
 
   function setupLoggerTest(method: string, color: any, logLevel: LogLevel): void {
     describe(`${ method }()`, () => {

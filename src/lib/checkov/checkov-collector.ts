@@ -57,7 +57,7 @@ export class CheckovCollector extends AnalysisCollectorBase {
       checkId: check.check_id,
       checkName: check.check_name,
       checkType,
-      resourceId: check.resource.replace(/\.$/, ''),
+      resourceId: check.resource ? check.resource.replace(/\.$/, '') : 'unknown',
       checkResult,
       filePath: check.file_path,
       fileLineRange: check.file_line_range

@@ -10,11 +10,6 @@ const collectors = {
   checkov: CheckovCollector,
 };
 
-// function printUsage() {
-//   // TODO: print useful details
-//   console.log('USAGE INFORMATION HERE');
-// }
-
 function parseOptions(): any {
   const args = argv as any;
   const tool = args._[0];

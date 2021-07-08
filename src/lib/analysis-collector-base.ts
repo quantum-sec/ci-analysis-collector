@@ -1,19 +1,24 @@
 import { IResult } from './result.interface';
 import { Logger } from './utils';
+import { CheckResult } from './check-result';
 import { v4 as uuid } from 'uuid';
 import cp from 'child_process';
 import chalk from 'chalk';
-import { CheckResult } from './check-result';
+import * as axios from 'axios';
 
 export abstract class AnalysisCollectorBase {
 
   public apiToken: string;
+
+  public apiSecret: string;
 
   public toolVersion: string;
 
   public traceId: string;
 
   public timestamp: Date;
+
+  public _request = axios.default;
 
   public constructor(public toolId: string, public logger: Logger) {
     this.traceId = uuid();
@@ -43,6 +48,7 @@ export abstract class AnalysisCollectorBase {
 
   public detectApiToken(): void {
     this.apiToken = process.env.QS_API_TOKEN;
+    this.apiSecret = process.env.QS_API_SECRET;
 
     if (!this.apiToken) {
       this.logger.info('No Quantum API token detected on the environment.', true);
@@ -102,7 +108,7 @@ export abstract class AnalysisCollectorBase {
   }
 
   public async postResults(results: IResult[], options: any): Promise<void> {
-    const payload = {
+    const payload = JSON.stringify({
       traceId: this.traceId,
       timestamp: this.timestamp,
       toolId: this.toolId,
@@ -113,11 +119,19 @@ export abstract class AnalysisCollectorBase {
         result.checkName = undefined;
         return result;
       }),
-    };
+    });
 
-    this.logger.debug(JSON.stringify(payload));
+    this.logger.debug(payload);
 
-    // TODO: webhook things
+    await this._request({
+      method: 'put',
+      url: 'https://hooks.prod.platform.quantum.security/ci-analysis-collector',
+      data: payload,
+      headers: {
+        authorization: `Bearer ${ this.apiToken }`,
+        'content-type': 'application/json',
+      },
+    });
   }
 
   public async getRepositoryUrl(options: any): Promise<string> {
@@ -141,7 +155,7 @@ export abstract class AnalysisCollectorBase {
     }
   }
 
-  public async spawn(command: string, args?: string[], options?: cp.SpawnOptions): Promise<string> {
+  public async spawn(command: string, args: string[] = [], options: cp.SpawnOptions = {}): Promise<string> {
     this.logger.debug([command, ...args].join(' '));
     this.logger.debug(options);
 
@@ -168,7 +182,7 @@ export abstract class AnalysisCollectorBase {
 
   public padLineNumber(line: number, length: number): string {
     let num = line.toString(10);
-    while (num.length > length) {
+    while (num.length < length) {
       num = ` ${ num }`;
     }
     return num;
