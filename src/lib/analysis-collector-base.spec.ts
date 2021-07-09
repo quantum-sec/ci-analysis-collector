@@ -50,9 +50,9 @@ describe('AnalysisCollectorBase', () => {
     });
 
     it('should call printResults() with the generated results', async () => {
-      await collector.exec({ cwd: '/test/' });
+      await collector.exec({ cwd: '/test/', quiet: false });
       expect(collector.printResults).toHaveBeenCalledTimes(1);
-      expect(collector.printResults).toHaveBeenCalledWith(['TEST_RESULT' as any]);
+      expect(collector.printResults).toHaveBeenCalledWith(['TEST_RESULT' as any], false);
     });
 
     it('should call postResults() with the generated results when an API token is present', async () => {
@@ -112,7 +112,7 @@ describe('AnalysisCollectorBase', () => {
 
     beforeEach(() => {
       resultFixture = {
-        checkResult: CheckResult.PASS,
+        checkResult: CheckResult.FAIL,
         checkId: 'TEST_CHECK_ID',
         checkName: 'TEST_CHECK_NAME',
         resourceId: 'TEST_RESOURCE_ID',
@@ -120,16 +120,22 @@ describe('AnalysisCollectorBase', () => {
       };
     });
 
-    function getConsoleOutput(results: IResult[]): string {
-      collector.printResults(results);
+    function getConsoleOutput(results: IResult[], quiet: boolean = false): string {
+      collector.printResults(results, quiet);
       expect(console.log).toHaveBeenCalledTimes(1);
       return (console.log as jasmine.Spy).calls.argsFor(0)[0];
     }
 
-    it('should write the check result to the console', () => {
+    it('should write passing checks to the console when the quiet option is false', () => {
       resultFixture.checkResult = CheckResult.PASS;
-      const result = getConsoleOutput([resultFixture]);
+      const result = getConsoleOutput([resultFixture], false);
       expect(result).toContain('PASS');
+    });
+
+    it('should not write passing checks to the console when the quiet option is true', () => {
+      resultFixture.checkResult = CheckResult.PASS;
+      collector.printResults([resultFixture], true);
+      expect(console.log).not.toHaveBeenCalled();
     });
 
     it('should write the check ID to the console', () => {
@@ -209,6 +215,7 @@ describe('AnalysisCollectorBase', () => {
 
       optionsFixture = {
         cwd: 'TEST_OPTIONS_CWD',
+        webhookUrl: 'TEST_WEBHOOK_URL',
       };
     });
 
@@ -243,7 +250,7 @@ describe('AnalysisCollectorBase', () => {
     it('should PUT the results to the webhook endpoint', async () => {
       await verifyRequest((request) => {
         expect(request.method).toEqual('put');
-        expect(request.url).toEqual('https://hooks.prod.platform.quantum.security/ci-analysis-collector');
+        expect(request.url).toEqual('TEST_WEBHOOK_URL');
       });
     });
 

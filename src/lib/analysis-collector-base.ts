@@ -71,7 +71,7 @@ export abstract class AnalysisCollectorBase {
     }
   }
 
-  public printResults(results: IResult[], quiet: boolean = true): void {
+  public printResults(results: IResult[], quiet: boolean): void {
     for (const result of results) {
       if (quiet && result.checkResult === CheckResult.PASS) {
         continue;
