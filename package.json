@@ -24,6 +24,7 @@
     "prepublishOnly": "npm run build"
   },
   "license": "Apache-2.0",
+  "bin": "dist/index.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "devDependencies": {
