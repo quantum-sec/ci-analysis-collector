@@ -10,8 +10,6 @@ export abstract class AnalysisCollectorBase {
 
   public apiToken: string;
 
-  public apiSecret: string;
-
   public toolVersion: string;
 
   public traceId: string;
@@ -43,12 +41,13 @@ export abstract class AnalysisCollectorBase {
 
     this.printResults(results);
 
-    await this.postResults(results, finalOptions);
+    if (this.apiToken) {
+      await this.postResults(results, finalOptions);
+    }
   }
 
   public detectApiToken(): void {
     this.apiToken = process.env.QS_API_TOKEN;
-    this.apiSecret = process.env.QS_API_SECRET;
 
     if (!this.apiToken) {
       this.logger.info('No Quantum API token detected on the environment.', true);
@@ -108,6 +107,7 @@ export abstract class AnalysisCollectorBase {
   }
 
   public async postResults(results: IResult[], options: any): Promise<void> {
+    this.logger.info('Submitting results to the Quantum Security platform...');
     const payload = JSON.stringify({
       traceId: this.traceId,
       timestamp: this.timestamp,
@@ -132,6 +132,8 @@ export abstract class AnalysisCollectorBase {
         'content-type': 'application/json',
       },
     });
+
+    this.logger.success('Results successfully submitted to the Quantum Security platform.');
   }
 
   public async getRepositoryUrl(options: any): Promise<string> {

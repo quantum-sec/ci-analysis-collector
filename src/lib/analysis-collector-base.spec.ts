@@ -55,10 +55,17 @@ describe('AnalysisCollectorBase', () => {
       expect(collector.printResults).toHaveBeenCalledWith(['TEST_RESULT' as any]);
     });
 
-    it('should call postResults() with the generated results', async () => {
+    it('should call postResults() with the generated results when an API token is present', async () => {
+      collector.apiToken = 'TEST_API_TOKEN';
       await collector.exec({ cwd: '/test/' });
       expect(collector.postResults).toHaveBeenCalledTimes(1);
       expect(collector.postResults).toHaveBeenCalledWith(['TEST_RESULT' as any], jasmine.any(Object));
+    });
+
+    it('should not call postResults() when an API token is not present', async () => {
+      collector.apiToken = null;
+      await collector.exec({ cwd: '/test/' });
+      expect(collector.postResults).not.toHaveBeenCalled();
     });
   });
 
