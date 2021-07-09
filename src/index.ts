@@ -42,9 +42,30 @@ function parseOptions(): any {
     }
   }
 
+  let softFail = false;
+  if (args['soft-fail'] || !!process.env.QS_COLLECTOR_SOFT_FAIL) {
+    softFail = true;
+  }
+
+  let quiet = false;
+  if (args.quiet || !!process.env.QS_COLLECTOR_QUIET) {
+    quiet = true;
+  }
+
+  let webhookUrl = 'https://vm.prod.platform.quantum.security/webhooks/ci';
+  if (!!process.env.QS_COLLECTOR_WEBHOOK_URL) {
+    webhookUrl = process.env.QS_COLLECTOR_WEBHOOK_URL;
+  }
+  if (args['webhook-url']) {
+    webhookUrl = args['webhook-url'];
+  }
+
   return {
     tool,
     path,
+    softFail,
+    quiet,
+    webhookUrl,
   };
 }
 
@@ -56,9 +77,15 @@ async function main(): Promise<void> {
   console.log();
   logger.info(`Running tool "${ options.tool }"...`, true);
 
-  await collector.exec({
+  const passing = await collector.exec({
     cwd: options.path,
+    quiet: options.quiet,
   });
+
+  if (!passing && !options.softFail) {
+    logger.error(`One or more ${ options.tool } checks failed or errored.`);
+    process.exit(2);
+  }
 }
 
 main().then(() => {

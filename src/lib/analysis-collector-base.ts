@@ -24,8 +24,7 @@ export abstract class AnalysisCollectorBase {
     this.detectApiToken();
   }
 
-  public async exec(options: any): Promise<void> {
-
+  public async exec(options: any): Promise<boolean> {
     const finalOptions = {
       ...options,
       env: process.env,
@@ -39,11 +38,13 @@ export abstract class AnalysisCollectorBase {
 
     const results = await this.getResults(finalOptions);
 
-    this.printResults(results);
+    this.printResults(results, options.quiet);
 
     if (this.apiToken) {
       await this.postResults(results, finalOptions);
     }
+
+    return !results.filter((r) => r.checkResult === CheckResult.FAIL || r.checkResult === CheckResult.ERRORED);
   }
 
   public detectApiToken(): void {
@@ -70,8 +71,12 @@ export abstract class AnalysisCollectorBase {
     }
   }
 
-  public printResults(results: IResult[]): void {
+  public printResults(results: IResult[], quiet: boolean = true): void {
     for (const result of results) {
+      if (quiet && result.checkResult === CheckResult.PASS) {
+        continue;
+      }
+
       const statusColor = this.getLineColor(result.checkResult);
 
       let text = chalk.bold.white(` [${ statusColor(result.checkResult) }] `);
@@ -121,11 +126,12 @@ export abstract class AnalysisCollectorBase {
       }),
     });
 
+    this.logger.debug(`Sending webhook event to ${ options.webhookUrl }`);
     this.logger.debug(payload);
 
     await this._request({
       method: 'put',
-      url: 'https://hooks.prod.platform.quantum.security/ci-analysis-collector',
+      url: options.webhookUrl,
       data: payload,
       headers: {
         authorization: `Bearer ${ this.apiToken }`,
