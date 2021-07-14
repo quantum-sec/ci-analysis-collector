@@ -38,6 +38,8 @@ export abstract class AnalysisCollectorBase {
 
     const results = await this.getResults(finalOptions);
 
+    this.logger.debug(JSON.stringify(results, null, 2));
+
     this.printResults(results, options.quiet);
 
     if (this.apiToken) {

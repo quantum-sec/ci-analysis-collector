@@ -18,6 +18,9 @@ export class CheckovCollector extends AnalysisCollectorBase {
     // Once we develop custom checks, they should be specified using the --external-checks-git argument.
     const args = ['--directory', '.', '--output', 'json', '--no-guide', '--soft-fail'];
     const output = await this.spawn('checkov', args, options);
+
+    this.logger.debug(JSON.stringify(output, null, 2));
+
     return this.parseResults(output);
   }
 
@@ -52,8 +55,14 @@ export class CheckovCollector extends AnalysisCollectorBase {
       results.push(...aggregateChecks.map((check): IResult =>
         this.createResult(check, checkType, resultMap[check.check_result.result])));
 
-      results.push(...set.results.parsing_errors.map((check): IResult =>
-        this.createResult(check, checkType, CheckResult.ERRORED)));
+      results.push(...set.results.parsing_errors.map((check): IResult => {
+        const result = this.createResult(check, checkType, CheckResult.ERRORED);
+        // Checkov returns parsing_errors as a list of file paths.
+        result.filePath = check;
+        result.checkId = 'PARSING_ERROR';
+        result.checkName = 'The source file could not be parsed';
+        return result;
+      }));
     }
 
     return results;
