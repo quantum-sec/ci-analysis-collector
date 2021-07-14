@@ -23,7 +23,14 @@ export class CheckovCollector extends AnalysisCollectorBase {
 
   public parseResults(output: string): IResult[] {
     const results = [];
-    const parsed = JSON.parse(output);
+    let parsed = JSON.parse(output);
+
+    // When checkov encounters multiple types of checks (i.e. Terraform and Kubernetes in the same repo)
+    // it returns an array of summaries, but when it encounters only a single type it returns a single object.
+    // If it's not an array, we'll wrap it to be processed consistently by the result handlers.
+    if (!Array.isArray(parsed)) {
+      parsed = [parsed];
+    }
 
     const resultMap = {
       /* eslint-disable @typescript-eslint/naming-convention */
