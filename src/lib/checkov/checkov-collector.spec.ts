@@ -53,7 +53,7 @@ describe('CheckovCollector', () => {
 
     beforeEach(() => {
       /* eslint-disable @typescript-eslint/naming-convention, camelcase */
-      raw = JSON.stringify([{
+      raw = JSON.stringify({
         check_type: 'TEST_CHECK_TYPE',
         results: {
           passed_checks: [{
@@ -83,13 +83,20 @@ describe('CheckovCollector', () => {
             },
           }],
         },
-      }]);
+      });
       /* eslint-enable @typescript-eslint/naming-convention, camelcase */
     });
 
     it('should include all checks', () => {
-      const results = collector.parseResults(raw);
+      const results = collector.parseResults(`[${raw}]`);
+      const checkResults = results.map(x => x.checkResult);
+      expect(checkResults).toContain(CheckResult.PASS);
+      expect(checkResults).toContain(CheckResult.FAIL);
+      expect(checkResults).toContain(CheckResult.SKIPPED);
+    });
 
+    it('should handle non-array result summaries', () => {
+      const results = collector.parseResults(raw);
       const checkResults = results.map(x => x.checkResult);
       expect(checkResults).toContain(CheckResult.PASS);
       expect(checkResults).toContain(CheckResult.FAIL);
