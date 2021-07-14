@@ -53,7 +53,7 @@ function parseOptions(): any {
     quiet = true;
   }
 
-  let webhookUrl = 'https://vm.prod.platform.quantum.security/webhooks/ci';
+  let webhookUrl = 'https://vapt.prod.platform.quantum.security/webhooks/ci';
   if (process.env.QS_COLLECTOR_WEBHOOK_URL) {
     webhookUrl = process.env.QS_COLLECTOR_WEBHOOK_URL;
   }
