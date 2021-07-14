@@ -24,8 +24,13 @@ dependencies. Alternatively, Quantum supplies Docker containers for each of the 
 
 Use `npx` to directly reference, install, and run this utility:
 
-```
+```bash
+# npx <= 6
 npx @quantum-sec/ci-analysis-collector [tool] [args]
+
+# npx >= 7
+npx --yes --package @quantum-sec/ci-analysis-collector \
+  --call 'ci-analysis-collector [tool] [args]'
 ```
 
 Where `[tool]` is the all lowercase name or "ID" of the tool (see the table of supported tools below) and where `[args]`
