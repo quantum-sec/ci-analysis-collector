@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { CheckovCollector, Logger } from './lib';
+import { CheckovCollector, Logger, TrivyCollector } from './lib';
 import fs from 'fs';
 import { argv } from 'yargs';
 
@@ -8,6 +8,7 @@ const logger = new Logger();
 
 const collectors = {
   checkov: CheckovCollector,
+  trivy: TrivyCollector,
 };
 
 /* eslint-disable complexity */
@@ -23,10 +24,10 @@ function parseOptions(): any {
   }
 
   if (!collectors[tool]) {
-    logger.error(`The specified tool "${ tool }" is not supported.`, true);
+    logger.error(`The specified tool "${tool}" is not supported.`, true);
     logger.info('Specify one of the following supported tools for instrumentation:');
     for (const key in collectors) {
-      logger.info(`  • ${ key }`);
+      logger.info(`  • ${key}`);
     }
     process.exit(1);
   }
@@ -38,7 +39,7 @@ function parseOptions(): any {
     }
     else {
       logger.error('The supplied --path argument does not exist.', true);
-      logger.info(`${ args.path } could not be found.`);
+      logger.info(`${args.path} could not be found.`);
       process.exit(1);
     }
   }
@@ -77,15 +78,17 @@ async function main(): Promise<void> {
   const collector = new collectors[options.tool](logger);
 
   console.log();
-  logger.info(`Running tool "${ options.tool }"...`, true);
+  logger.info(`Running tool "${options.tool}"...`, true);
+
 
   const passing = await collector.exec({
     cwd: options.path,
     quiet: options.quiet,
   });
 
+
   if (!passing && !options.softFail) {
-    logger.error(`One or more ${ options.tool } checks failed or errored.`);
+    logger.error(`One or more ${options.tool} checks failed or errored.`);
     process.exit(2);
   }
 }

@@ -5,6 +5,7 @@ import { v4 as uuid } from 'uuid';
 import cp from 'child_process';
 import chalk from 'chalk';
 import * as axios from 'axios';
+import { argv } from 'yargs';
 
 export abstract class AnalysisCollectorBase {
 
@@ -17,6 +18,8 @@ export abstract class AnalysisCollectorBase {
   public timestamp: Date;
 
   public _request = axios.default;
+
+  public _argv = argv;
 
   public constructor(public toolId: string, public logger: Logger) {
     this.traceId = uuid();
@@ -46,7 +49,12 @@ export abstract class AnalysisCollectorBase {
       await this.postResults(results, finalOptions);
     }
 
-    return !results.filter((r) => r.checkResult === CheckResult.FAIL || r.checkResult === CheckResult.ERRORED);
+    const failingStatuses = [
+      CheckResult.FAIL,
+      CheckResult.ERRORED,
+    ];
+
+    return !results.some((r) => failingStatuses.includes(r.checkResult));
   }
 
   public detectApiToken(): void {

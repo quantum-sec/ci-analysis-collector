@@ -67,4 +67,23 @@ export interface IResult {
    * The raw response from the queried API.
    */
   responseBody?: string;
+
+  // VULNERABILITY BASED RESULT FIELDS
+  // The following optional fields only apply to tools that return vulnerabilities.
+
+  /**
+   * The raw response from the queried API.
+   */
+  vulnerabilityId?: string;
+
+  /**
+   * The name of the package in which the vulnerability was found.
+   */
+  packageName?: string;
+
+  /**
+   * The version of the package in which the vulnerability was found.
+   */
+  packageVersion?: string;
+
 }
