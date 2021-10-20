@@ -4,9 +4,13 @@
   "description": "Utility library used to collect security analysis results and upload them for correlation and reporting in the Quantum Security platform.",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/quantum-sec/ci-analysis-collector.git"
+    "url": "git@github.com:quantum-sec/ci-analysis-collector.git"
   },
-  "author": "Quantum Security Pte. Ltd. <info@quantum.security> (https://www.quantum.security/)",
+  "author": {
+    "name": "Quantum Security Pte. Ltd.",
+    "email": "info@quantum.security",
+    "url": "https://www.quantum.security/"
+  },
   "scripts": {
     "clean": "rm -rf ./dist/",
     "build": "npm run clean && tsc --build --extendedDiagnostics",
@@ -31,7 +35,6 @@
     "@quantum-sec/nyc-config-typescript": "^1.1.2",
     "@quantum-sec/typescript-config": "^1.0.5",
     "@types/jasmine": "^3.9.1",
-    "@types/jest": "^27.0.2",
     "@types/node": "^15.12.5",
     "@types/yargs": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^4.28.0",
@@ -44,7 +47,6 @@
     "jasmine-spec-reporter": "^4.2.1",
     "jasmine-ts": "^0.3.0",
     "jasmine-ts-console-reporter": "^3.1.1",
-    "jest": "^27.3.0",
     "nyc": "^15.0.0",
     "ts-node": "^8.6.2",
     "typescript": "^4.2.4"

@@ -40,12 +40,15 @@ describe('ZapCollector', () => {
         'target-name': 'TEST_TARGET',
       } as any;
       spyOn(collector.fs, 'readFileSync').and.returnValue('TEST_OUTPUT');
+      spyOn(collector.fs, 'mkdtempSync').and.returnValue('TEST_DIR');
       spyOn(collector, 'parseResults').and.returnValue('TEST_RESULTS' as any);
       const result = await collector.getResults({});
       expect(result).toEqual('TEST_RESULTS' as any);
 
       const expectedArgs = [
-        '-v $(pwd):/zap/wrk/:rw',
+        '-v $(',
+        'TEST_DIR',
+        '):/zap/wrk/:rw',
         '-t owasp/zap2docker-stable zap-full-scan.py',
         '-t',
         'TEST_TARGET',
