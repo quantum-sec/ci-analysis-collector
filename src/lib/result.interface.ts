@@ -86,4 +86,28 @@ export interface IResult {
    */
   packageVersion?: string;
 
+  // VULNERABILITY BASED RESULT FIELDS
+  // The following optional fields only apply to tools that return vulnerabilities.
+
+  /**
+   * The rule which the code violated.
+   */
+  codeRule?: string;
+
+  /**
+   * The message which corresponds with the violated rule.
+   */
+  codeMessage?: string;
+
+  /**
+   * The hash which corresponds with the issue.
+   */
+  codeHash?: string;
+
+  /**
+   * The effort required to fix the corresponding code smell.
+   */
+  codeDebt?: string;
+
+
 }

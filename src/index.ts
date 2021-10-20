@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { CheckovCollector, Logger, TrivyCollector } from './lib';
+import { CheckovCollector, Logger, TrivyCollector, SonarqubeCollector } from './lib';
 import fs from 'fs';
 import { argv } from 'yargs';
 
@@ -9,6 +9,7 @@ const logger = new Logger();
 const collectors = {
   checkov: CheckovCollector,
   trivy: TrivyCollector,
+  sonarqube: SonarqubeCollector,
 };
 
 /* eslint-disable complexity */
