@@ -35,11 +35,14 @@ describe('SonarqubeCollector', () => {
   describe('getResults()', () => {
     it('should call sonarqube with preset options', async () => {
       collector._argv = {
-        'dsonar-login': 'TEST_LOGIN',
-        'dsonar-projectkey': 'TEST_PROJECT_KEY',
-        'dsonar-projectdir': 'TEST_PROJECT_DIR',
-        'dsonar-username': 'TEST_USERNAME',
-        'dsonar-password': 'TEST_PASSWORD',
+        'directory': 'TEST_PROJECT_DIR',
+      } as any;
+
+      collector.fields = {
+        'sqlogin' : 'TEST_LOGIN',
+        'sqkey' : 'TEST_PROJECT_KEY',
+        'squsername' : 'TEST_USERNAME',
+        'sqpassword' : 'TEST_PASSWORD',
       } as any;
 
       collector.http.get = jasmine.createSpy().and.callFake(async (args) => new Promise(resolve => {
@@ -67,62 +70,65 @@ describe('SonarqubeCollector', () => {
 
     it('should error when authentication token is not specified', async () => {
       collector._argv = {
-        'dsonar-projectkey': 'TEST_PROJECT_KEY',
-        'dsonar-projectdir': 'TEST_PROJECT_DIR',
-        'dsonar-username': 'TEST_USERNAME',
-        'dsonar-password': 'TEST_PASSWORD',
+        'directory': 'TEST_PROJECT_DIR',
       } as any;
-      spyOn(collector, 'parseResults').and.returnValue('TEST_RESULTS' as any);
+      collector.fields = {
+        'sqkey' : 'TEST_PROJECT_KEY',
+        'squsername' : 'TEST_USERNAME',
+        'sqpassword' : 'TEST_PASSWORD',
+      } as any;
       await expectAsync(collector.getResults({}))
-        .toBeRejectedWith(new Error('You must specify a --dsonar-login argument.'));
+        .toBeRejectedWith(new Error('You must specify authentication token in the config.'));
     });
 
     it('should error when unique SonarQube instance is not specified', async () => {
       collector._argv = {
-        'dsonar-login': 'TEST_LOGIN',
-        'dsonar-projectdir': 'TEST_PROJECT_DIR',
-        'dsonar-username': 'TEST_USERNAME',
-        'dsonar-password': 'TEST_PASSWORD',
+        'directory': 'TEST_PROJECT_DIR',
       } as any;
-      spyOn(collector, 'parseResults').and.returnValue('TEST_RESULTS' as any);
+      collector.fields = {
+        'sqlogin' : 'TEST_LOGIN',
+        'squsername' : 'TEST_USERNAME',
+        'sqpassword' : 'TEST_PASSWORD',
+      } as any;
       await expectAsync(collector.getResults({}))
-        .toBeRejectedWith(new Error('You must specify a --dsonar-projectkey argument.'));
+        .toBeRejectedWith(new Error('You must specify projectkey in the config.'));
     });
 
     it('should error when directory to scan is not specified', async () => {
-      collector._argv = {
-        'dsonar-login': 'TEST_LOGIN',
-        'dsonar-projectkey': 'TEST_PROJECT_KEY',
-        'dsonar-username': 'TEST_USERNAME',
-        'dsonar-password': 'TEST_PASSWORD',
+      collector.fields = {
+        'sqlogin' : 'TEST_LOGIN',
+        'sqkey' : 'TEST_PROJECT_KEY',
+        'squsername' : 'TEST_USERNAME',
+        'sqpassword' : 'TEST_PASSWORD',
       } as any;
-      spyOn(collector, 'parseResults').and.returnValue('TEST_RESULTS' as any);
       await expectAsync(collector.getResults({}))
-        .toBeRejectedWith(new Error('You must specify a --dsonar-projectdir argument.'));
+        .toBeRejectedWith(new Error('You must specify a --directory argument.'));
     });
 
     it('should error when SonarQube username is not specified', async () => {
       collector._argv = {
-        'dsonar-login': 'TEST_LOGIN',
-        'dsonar-projectkey': 'TEST_PROJECT_KEY',
-        'dsonar-projectdir': 'TEST_PROJECT_DIR',
-        'dsonar-password': 'TEST_PASSWORD',
+        'directory': 'TEST_PROJECT_DIR',
       } as any;
-      spyOn(collector, 'parseResults').and.returnValue('TEST_RESULTS' as any);
+      collector.fields = {
+        'sqlogin' : 'TEST_LOGIN',
+        'sqkey' : 'TEST_PROJECT_KEY',
+        'sqpassword' : 'TEST_PASSWORD',
+      } as any;
       await expectAsync(collector.getResults({}))
-        .toBeRejectedWith(new Error('You must specify a --dsonar-username argument.'));
+        .toBeRejectedWith(new Error('You must specify username in the config.'));
     });
 
     it('should error when SonarQube password is not specified', async () => {
       collector._argv = {
-        'dsonar-login': 'TEST_LOGIN',
-        'dsonar-projectkey': 'TEST_PROJECT_KEY',
-        'dsonar-projectdir': 'TEST_PROJECT_DIR',
-        'dsonar-username': 'TEST_USERNAME',
+        'directory': 'TEST_PROJECT_DIR',
       } as any;
-      spyOn(collector, 'parseResults').and.returnValue('TEST_RESULTS' as any);
+      collector.fields = {
+        'sqlogin' : 'TEST_LOGIN',
+        'sqkey' : 'TEST_PROJECT_KEY',
+        'squsername' : 'TEST_USERNAME',
+      } as any;
       await expectAsync(collector.getResults({}))
-        .toBeRejectedWith(new Error('You must specify a --dsonar-password argument.'));
+        .toBeRejectedWith(new Error('You must specify password in the config.'));
     });
 
   });
@@ -135,12 +141,10 @@ describe('SonarqubeCollector', () => {
       raw = JSON.stringify({
         issues: [{
           rule: 'TEST_RULE',
+          message: 'TEST_MESSAGE',
           type: 'TEST_TYPE',
           component: 'TEST_COMPONENT',
           textRange: [],
-          message: 'TEST_MESSAGE',
-          hash: 'TEST_HASH',
-          debt: 'TEST_DEBT',
         }],
       });
     });
@@ -156,9 +160,14 @@ describe('SonarqubeCollector', () => {
       expect(result.checkResult).toEqual(CheckResult.FAIL);
     });
 
-    it('should set the checkName to the rule', () => {
+    it('should set the checkID to the rule', () => {
       const result = collector.parseResults(raw)[0];
-      expect(result.checkName).toEqual('TEST_RULE');
+      expect(result.checkId).toEqual('TEST_RULE');
+    });
+
+    it('should set the checkName to the message', () => {
+      const result = collector.parseResults(raw)[0];
+      expect(result.checkName).toEqual('TEST_MESSAGE');
     });
 
     it('should set the checkType to type', () => {
@@ -174,26 +183,6 @@ describe('SonarqubeCollector', () => {
     it('should set the fileLineRange to array ', () => {
       const result = collector.parseResults(raw)[0];
       expect(result.fileLineRange).toEqual([]);
-    });
-
-    it('should set the codeRule to rule', () => {
-      const result = collector.parseResults(raw)[0];
-      expect(result.codeRule).toEqual('TEST_RULE');
-    });
-
-    it('should set the codeMessage to rule', () => {
-      const result = collector.parseResults(raw)[0];
-      expect(result.codeMessage).toEqual('TEST_MESSAGE');
-    });
-
-    it('should set the codeHash to rule', () => {
-      const result = collector.parseResults(raw)[0];
-      expect(result.codeHash).toEqual('TEST_HASH');
-    });
-
-    it('should set the codeDebt to rule', () => {
-      const result = collector.parseResults(raw)[0];
-      expect(result.codeDebt).toEqual('TEST_DEBT');
     });
   });
 

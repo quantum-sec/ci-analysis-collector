@@ -7,6 +7,8 @@ import * as axios from 'axios';
 export class SonarqubeCollector extends AnalysisCollectorBase {
   public http = axios.default;
 
+  public fields = process.env;
+
   public constructor(logger: Logger) {
     super('sonarqube', logger);
   }
@@ -17,29 +19,30 @@ export class SonarqubeCollector extends AnalysisCollectorBase {
   }
 
   public override async getResults(options: any): Promise<IResult[]> {
-    const dsonarLogin = this._argv['dsonar-login'];
+    const dsonarLogin = this.fields.sqlogin;
     if (!dsonarLogin) {
-      throw new Error('You must specify a --dsonar-login argument.');
+      throw new Error('You must specify authentication token in the config.');
     }
 
-    const dsonarProjectKey = this._argv['dsonar-projectkey'];
+    const dsonarProjectKey = this.fields.sqkey;
     if (!dsonarProjectKey) {
-      throw new Error('You must specify a --dsonar-projectkey argument.');
+      throw new Error('You must specify projectkey in the config.');
     }
 
-    const dsonarProjectBaseDir = this._argv['dsonar-projectdir'];
-    if (!dsonarProjectBaseDir) {
-      throw new Error('You must specify a --dsonar-projectdir argument.');
-    }
-
-    const dsonarUsername = this._argv['dsonar-username'];
+    const dsonarUsername = this.fields.squsername;
     if (!dsonarUsername) {
-      throw new Error('You must specify a --dsonar-username argument.');
+      throw new Error('You must specify username in the config.');
     }
 
-    const dsonarPassword = this._argv['dsonar-password'];
+    const dsonarPassword = this.fields.sqpassword;
     if (!dsonarPassword) {
-      throw new Error('You must specify a --dsonar-password argument.');
+      throw new Error('You must specify password in the config.');
+    }
+
+    // eslint-disable-next-line dot-notation
+    const dsonarProjectBaseDir = this._argv['directory'];
+    if (!dsonarProjectBaseDir) {
+      throw new Error('You must specify a --directory argument.');
     }
 
     const args = [
@@ -49,19 +52,12 @@ export class SonarqubeCollector extends AnalysisCollectorBase {
     ];
     await this.spawn('sonar-scanner', args, options);
 
-    return new Promise((resolve, reject) => {
-      let output;
-
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.http.get(`http://localhost:9000/api/issues/search?componentKeys=${dsonarProjectKey}`, { withCredentials: true,
-        auth: {
-          username: dsonarUsername,
-          password: dsonarPassword,
-        } }).then((response) => {
-        output = response.data;
-        resolve(this.parseResults(JSON.stringify(output)));
-      });
-    });
+    const response = await this.http.get(process.env.URL + dsonarProjectKey, { withCredentials: true,
+      auth: {
+        username: dsonarUsername,
+        password: dsonarPassword,
+      } });
+    return this.parseResults(JSON.stringify(response.data));
   }
 
   public parseResults(output: string): IResult[] {
@@ -77,10 +73,6 @@ export class SonarqubeCollector extends AnalysisCollectorBase {
         checkResult: CheckResult.PASS,
         resourceId: parsed.component,
         fileLineRange: parsed.textRange,
-        codeRule: parsed.rule,
-        codeMessage: parsed.message,
-        codeHash: parsed.hash,
-        codeDebt: parsed.debt,
       };
       results.push(result);
 
@@ -89,16 +81,12 @@ export class SonarqubeCollector extends AnalysisCollectorBase {
       for (const set of parsed.issues) {
 
         const result: IResult = {
-          checkId: set.key,
-          checkName: set.rule,
+          checkId: set.rule,
+          checkName: set.message,
           checkType: set.type,
           checkResult: CheckResult.FAIL,
           resourceId: set.component,
           fileLineRange: set.textRange,
-          codeRule: set.rule,
-          codeMessage: set.message,
-          codeHash: set.hash,
-          codeDebt: set.debt,
         };
         results.push(result);
       }
