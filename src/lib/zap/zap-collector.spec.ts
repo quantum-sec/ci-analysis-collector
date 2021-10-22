@@ -28,8 +28,8 @@ describe('ZapCollector', () => {
       const result = await collector.getToolVersion({});
       expect(result).toEqual('TEST_OUTPUT');
       expect(collector.spawn).toHaveBeenCalledTimes(1);
-      expect(collector.spawn).toHaveBeenCalledWith('docker run',
-        ['-t owasp/zap2docker-stable zap.sh -cmd -version'],
+      expect(collector.spawn).toHaveBeenCalledWith('zap.sh',
+        ['-cmd -version'],
         {});
     });
   });
@@ -40,23 +40,18 @@ describe('ZapCollector', () => {
         'target-name': 'TEST_TARGET',
       } as any;
       spyOn(collector.fs, 'readFileSync').and.returnValue('TEST_OUTPUT');
-      spyOn(collector.fs, 'mkdtempSync').and.returnValue('TEST_DIR');
       spyOn(collector, 'parseResults').and.returnValue('TEST_RESULTS' as any);
       const result = await collector.getResults({});
       expect(result).toEqual('TEST_RESULTS' as any);
 
       const expectedArgs = [
-        '-v $(',
-        'TEST_DIR',
-        '):/zap/wrk/:rw',
-        '-t owasp/zap2docker-stable zap-full-scan.py',
         '-t',
         'TEST_TARGET',
         '-J zapreport.json',
         '-s',
       ];
       expect(collector.spawn).toHaveBeenCalledTimes(1);
-      expect(collector.spawn).toHaveBeenCalledWith('docker run', expectedArgs, {});
+      expect(collector.spawn).toHaveBeenCalledWith('zap-full-scan.py', expectedArgs, {});
 
       expect(collector.parseResults).toHaveBeenCalledTimes(1);
       expect(collector.parseResults).toHaveBeenCalledWith('TEST_OUTPUT');

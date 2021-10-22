@@ -3,8 +3,6 @@ import { CheckResult } from '../check-result';
 import { IResult } from '../result.interface';
 import { Logger } from '../utils';
 import * as fs from 'fs';
-import * as path from 'path';
-import * as os from 'os';
 
 export class ZapCollector extends AnalysisCollectorBase {
   public fs = fs;
@@ -14,8 +12,8 @@ export class ZapCollector extends AnalysisCollectorBase {
   }
 
   public override async getToolVersion(options: any): Promise<string> {
-    const args = ['-t owasp/zap2docker-stable zap.sh -cmd -version'];
-    return await this.spawn('docker run', args, options);
+    const args = ['-cmd -version'];
+    return await this.spawn('zap.sh', args, options);
   }
 
   public override async getResults(options: any): Promise<IResult[]> {
@@ -24,10 +22,8 @@ export class ZapCollector extends AnalysisCollectorBase {
       throw new Error('You must specify an --target-name argument.');
     }
 
-    const dir = fs.mkdtempSync(path.join(os.tmpdir()) + path.sep);
-    const args = ['-v $(', dir, '):/zap/wrk/:rw', '-t owasp/zap2docker-stable zap-full-scan.py',
-      '-t', targetName, '-J zapreport.json', '-s'];
-    const output = await this.spawn('docker run', args, options);
+    const args = ['-t', targetName, '-J zapreport.json', '-s'];
+    const output = await this.spawn('zap-full-scan.py', args, options);
 
 
     const jsonFileContents: string = this.fs.readFileSync('zapreport.json', 'utf8');
