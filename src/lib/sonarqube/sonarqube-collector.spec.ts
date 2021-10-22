@@ -33,18 +33,24 @@ describe('SonarqubeCollector', () => {
   });
 
   describe('getResults()', () => {
+    const oldEnv = process.env;
+
+    beforeEach(() => {
+      process.env = { ...oldEnv };
+    });
+
+    afterEach(() => {
+      process.env = oldEnv;
+    });
+
     it('should call sonarqube with preset options', async () => {
       collector._argv = {
-        'directory': 'TEST_PROJECT_DIR',
+        'proj-dir': 'TEST_PROJECT_DIR',
       } as any;
-      /* eslint-disable @typescript-eslint/naming-convention */
-      collector.fields = {
-        'LOGIN' : 'TEST_LOGIN',
-        'KEY' : 'TEST_PROJECT_KEY',
-        'USERNAME' : 'TEST_USERNAME',
-        'PASSWORD' : 'TEST_PASSWORD',
-      } as any;
-      /* eslint-enable @typescript-eslint/naming-convention */
+      process.env.LOGIN = 'TEST_LOGIN';
+      process.env.KEY = 'TEST_PROJECT_KEY';
+      process.env.USERNAME = 'TEST_USERNAME';
+      process.env.PASSWORD = 'TEST_PASSWORD';
 
       collector.http.get = jasmine.createSpy().and.callFake(async (args) => new Promise(resolve => {
         resolve({
@@ -71,73 +77,53 @@ describe('SonarqubeCollector', () => {
 
     it('should error when authentication token is not specified', async () => {
       collector._argv = {
-        'directory': 'TEST_PROJECT_DIR',
+        'proj-dir': 'TEST_PROJECT_DIR',
       } as any;
-      /* eslint-disable @typescript-eslint/naming-convention */
-      collector.fields = {
-        'KEY' : 'TEST_PROJECT_KEY',
-        'USERNAME' : 'TEST_USERNAME',
-        'PASSWORD' : 'TEST_PASSWORD',
-      } as any;
-      /* eslint-enable @typescript-eslint/naming-convention */
+      process.env.KEY = 'TEST_PROJECT_KEY';
+      process.env.USERNAME = 'TEST_USERNAME';
+      process.env.PASSWORD = 'TEST_PASSWORD';
       await expectAsync(collector.getResults({}))
         .toBeRejectedWith(new Error('You must specify authentication token in the config.'));
     });
 
     it('should error when unique SonarQube instance is not specified', async () => {
       collector._argv = {
-        'directory': 'TEST_PROJECT_DIR',
+        'proj-dir': 'TEST_PROJECT_DIR',
       } as any;
-      /* eslint-disable @typescript-eslint/naming-convention */
-      collector.fields = {
-        'LOGIN' : 'TEST_LOGIN',
-        'USERNAME' : 'TEST_USERNAME',
-        'PASSWORD' : 'TEST_PASSWORD',
-      } as any;
-      /* eslint-enable @typescript-eslint/naming-convention */
+      process.env.LOGIN = 'TEST_LOGIN';
+      process.env.USERNAME = 'TEST_USERNAME';
+      process.env.PASSWORD = 'TEST_PASSWORD';
       await expectAsync(collector.getResults({}))
         .toBeRejectedWith(new Error('You must specify projectkey in the config.'));
     });
 
     it('should error when directory to scan is not specified', async () => {
-      /* eslint-disable @typescript-eslint/naming-convention */
-      collector.fields = {
-        'LOGIN' : 'TEST_LOGIN',
-        'KEY' : 'TEST_PROJECT_KEY',
-        'USERNAME' : 'TEST_USERNAME',
-        'PASSWORD' : 'TEST_PASSWORD',
-      } as any;
-      /* eslint-enable @typescript-eslint/naming-convention */
+      process.env.LOGIN = 'TEST_LOGIN';
+      process.env.KEY = 'TEST_PROJECT_KEY';
+      process.env.USERNAME = 'TEST_USERNAME';
+      process.env.PASSWORD = 'TEST_PASSWORD';
       await expectAsync(collector.getResults({}))
-        .toBeRejectedWith(new Error('You must specify a --directory argument.'));
+        .toBeRejectedWith(new Error('You must specify a --proj-dir argument.'));
     });
 
     it('should error when SonarQube username is not specified', async () => {
       collector._argv = {
-        'directory': 'TEST_PROJECT_DIR',
+        'proj-dir': 'TEST_PROJECT_DIR',
       } as any;
-      /* eslint-disable @typescript-eslint/naming-convention */
-      collector.fields = {
-        'LOGIN' : 'TEST_LOGIN',
-        'KEY' : 'TEST_PROJECT_KEY',
-        'PASSWORD' : 'TEST_PASSWORD',
-      } as any;
-      /* eslint-enable @typescript-eslint/naming-convention */
+      process.env.LOGIN = 'TEST_LOGIN';
+      process.env.KEY = 'TEST_PROJECT_KEY';
+      process.env.PASSWORD = 'TEST_PASSWORD';
       await expectAsync(collector.getResults({}))
         .toBeRejectedWith(new Error('You must specify username in the config.'));
     });
 
     it('should error when SonarQube password is not specified', async () => {
       collector._argv = {
-        'directory': 'TEST_PROJECT_DIR',
+        'proj-dir': 'TEST_PROJECT_DIR',
       } as any;
-      /* eslint-disable @typescript-eslint/naming-convention */
-      collector.fields = {
-        'LOGIN' : 'TEST_LOGIN',
-        'KEY' : 'TEST_PROJECT_KEY',
-        'USERNAME' : 'TEST_USERNAME',
-      } as any;
-      /* eslint-enable @typescript-eslint/naming-convention */
+      process.env.LOGIN = 'TEST_LOGIN';
+      process.env.KEY = 'TEST_PROJECT_KEY';
+      process.env.USERNAME = 'TEST_USERNAME';
       await expectAsync(collector.getResults({}))
         .toBeRejectedWith(new Error('You must specify password in the config.'));
     });

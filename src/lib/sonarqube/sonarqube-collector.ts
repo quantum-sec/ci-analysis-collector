@@ -7,8 +7,6 @@ import * as axios from 'axios';
 export class SonarqubeCollector extends AnalysisCollectorBase {
   public http = axios.default;
 
-  public fields = process.env;
-
   public constructor(logger: Logger) {
     super('sonarqube', logger);
   }
@@ -19,30 +17,29 @@ export class SonarqubeCollector extends AnalysisCollectorBase {
   }
 
   public override async getResults(options: any): Promise<IResult[]> {
-    const dsonarLogin = this.fields.LOGIN;
+    const dsonarLogin = process.env.LOGIN;
     if (!dsonarLogin) {
       throw new Error('You must specify authentication token in the config.');
     }
 
-    const dsonarProjectKey = this.fields.KEY;
+    const dsonarProjectKey = process.env.KEY;
     if (!dsonarProjectKey) {
       throw new Error('You must specify projectkey in the config.');
     }
 
-    const dsonarUsername = this.fields.USERNAME;
+    const dsonarUsername = process.env.USERNAME;
     if (!dsonarUsername) {
       throw new Error('You must specify username in the config.');
     }
 
-    const dsonarPassword = this.fields.PASSWORD;
+    const dsonarPassword = process.env.PASSWORD;
     if (!dsonarPassword) {
       throw new Error('You must specify password in the config.');
     }
 
-    // eslint-disable-next-line dot-notation
-    const dsonarProjectBaseDir = this._argv['directory'];
+    const dsonarProjectBaseDir = this._argv['proj-dir'];
     if (!dsonarProjectBaseDir) {
-      throw new Error('You must specify a --directory argument.');
+      throw new Error('You must specify a --proj-dir argument.');
     }
 
     const args = [
