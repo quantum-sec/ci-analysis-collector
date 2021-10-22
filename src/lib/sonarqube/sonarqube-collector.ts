@@ -19,22 +19,22 @@ export class SonarqubeCollector extends AnalysisCollectorBase {
   }
 
   public override async getResults(options: any): Promise<IResult[]> {
-    const dsonarLogin = this.fields.sqlogin;
+    const dsonarLogin = this.fields.LOGIN;
     if (!dsonarLogin) {
       throw new Error('You must specify authentication token in the config.');
     }
 
-    const dsonarProjectKey = this.fields.sqkey;
+    const dsonarProjectKey = this.fields.KEY;
     if (!dsonarProjectKey) {
       throw new Error('You must specify projectkey in the config.');
     }
 
-    const dsonarUsername = this.fields.squsername;
+    const dsonarUsername = this.fields.USERNAME;
     if (!dsonarUsername) {
       throw new Error('You must specify username in the config.');
     }
 
-    const dsonarPassword = this.fields.sqpassword;
+    const dsonarPassword = this.fields.PASSWORD;
     if (!dsonarPassword) {
       throw new Error('You must specify password in the config.');
     }
@@ -52,6 +52,7 @@ export class SonarqubeCollector extends AnalysisCollectorBase {
     ];
     await this.spawn('sonar-scanner', args, options);
 
+    //  URL format should be in http://your-url-here:portno/api/issues/search?componentKeys=
     const response = await this.http.get(process.env.URL + dsonarProjectKey, { withCredentials: true,
       auth: {
         username: dsonarUsername,

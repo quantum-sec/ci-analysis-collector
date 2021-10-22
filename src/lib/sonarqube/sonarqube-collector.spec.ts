@@ -37,13 +37,14 @@ describe('SonarqubeCollector', () => {
       collector._argv = {
         'directory': 'TEST_PROJECT_DIR',
       } as any;
-
+      /* eslint-disable @typescript-eslint/naming-convention */
       collector.fields = {
-        'sqlogin' : 'TEST_LOGIN',
-        'sqkey' : 'TEST_PROJECT_KEY',
-        'squsername' : 'TEST_USERNAME',
-        'sqpassword' : 'TEST_PASSWORD',
+        'LOGIN' : 'TEST_LOGIN',
+        'KEY' : 'TEST_PROJECT_KEY',
+        'USERNAME' : 'TEST_USERNAME',
+        'PASSWORD' : 'TEST_PASSWORD',
       } as any;
+      /* eslint-enable @typescript-eslint/naming-convention */
 
       collector.http.get = jasmine.createSpy().and.callFake(async (args) => new Promise(resolve => {
         resolve({
@@ -72,11 +73,13 @@ describe('SonarqubeCollector', () => {
       collector._argv = {
         'directory': 'TEST_PROJECT_DIR',
       } as any;
+      /* eslint-disable @typescript-eslint/naming-convention */
       collector.fields = {
-        'sqkey' : 'TEST_PROJECT_KEY',
-        'squsername' : 'TEST_USERNAME',
-        'sqpassword' : 'TEST_PASSWORD',
+        'KEY' : 'TEST_PROJECT_KEY',
+        'USERNAME' : 'TEST_USERNAME',
+        'PASSWORD' : 'TEST_PASSWORD',
       } as any;
+      /* eslint-enable @typescript-eslint/naming-convention */
       await expectAsync(collector.getResults({}))
         .toBeRejectedWith(new Error('You must specify authentication token in the config.'));
     });
@@ -85,22 +88,26 @@ describe('SonarqubeCollector', () => {
       collector._argv = {
         'directory': 'TEST_PROJECT_DIR',
       } as any;
+      /* eslint-disable @typescript-eslint/naming-convention */
       collector.fields = {
-        'sqlogin' : 'TEST_LOGIN',
-        'squsername' : 'TEST_USERNAME',
-        'sqpassword' : 'TEST_PASSWORD',
+        'LOGIN' : 'TEST_LOGIN',
+        'USERNAME' : 'TEST_USERNAME',
+        'PASSWORD' : 'TEST_PASSWORD',
       } as any;
+      /* eslint-enable @typescript-eslint/naming-convention */
       await expectAsync(collector.getResults({}))
         .toBeRejectedWith(new Error('You must specify projectkey in the config.'));
     });
 
     it('should error when directory to scan is not specified', async () => {
+      /* eslint-disable @typescript-eslint/naming-convention */
       collector.fields = {
-        'sqlogin' : 'TEST_LOGIN',
-        'sqkey' : 'TEST_PROJECT_KEY',
-        'squsername' : 'TEST_USERNAME',
-        'sqpassword' : 'TEST_PASSWORD',
+        'LOGIN' : 'TEST_LOGIN',
+        'KEY' : 'TEST_PROJECT_KEY',
+        'USERNAME' : 'TEST_USERNAME',
+        'PASSWORD' : 'TEST_PASSWORD',
       } as any;
+      /* eslint-enable @typescript-eslint/naming-convention */
       await expectAsync(collector.getResults({}))
         .toBeRejectedWith(new Error('You must specify a --directory argument.'));
     });
@@ -109,11 +116,13 @@ describe('SonarqubeCollector', () => {
       collector._argv = {
         'directory': 'TEST_PROJECT_DIR',
       } as any;
+      /* eslint-disable @typescript-eslint/naming-convention */
       collector.fields = {
-        'sqlogin' : 'TEST_LOGIN',
-        'sqkey' : 'TEST_PROJECT_KEY',
-        'sqpassword' : 'TEST_PASSWORD',
+        'LOGIN' : 'TEST_LOGIN',
+        'KEY' : 'TEST_PROJECT_KEY',
+        'PASSWORD' : 'TEST_PASSWORD',
       } as any;
+      /* eslint-enable @typescript-eslint/naming-convention */
       await expectAsync(collector.getResults({}))
         .toBeRejectedWith(new Error('You must specify username in the config.'));
     });
@@ -122,15 +131,16 @@ describe('SonarqubeCollector', () => {
       collector._argv = {
         'directory': 'TEST_PROJECT_DIR',
       } as any;
+      /* eslint-disable @typescript-eslint/naming-convention */
       collector.fields = {
-        'sqlogin' : 'TEST_LOGIN',
-        'sqkey' : 'TEST_PROJECT_KEY',
-        'squsername' : 'TEST_USERNAME',
+        'LOGIN' : 'TEST_LOGIN',
+        'KEY' : 'TEST_PROJECT_KEY',
+        'USERNAME' : 'TEST_USERNAME',
       } as any;
+      /* eslint-enable @typescript-eslint/naming-convention */
       await expectAsync(collector.getResults({}))
         .toBeRejectedWith(new Error('You must specify password in the config.'));
     });
-
   });
 
   describe('parseResults()', () => {
