@@ -47,10 +47,10 @@ describe('SonarqubeCollector', () => {
       collector._argv = {
         'proj-dir': 'TEST_PROJECT_DIR',
       } as any;
-      process.env.LOGIN = 'TEST_LOGIN';
-      process.env.KEY = 'TEST_PROJECT_KEY';
-      process.env.USERNAME = 'TEST_USERNAME';
-      process.env.PASSWORD = 'TEST_PASSWORD';
+      process.env.SQ_LOGIN = 'TEST_LOGIN';
+      process.env.SQ_KEY = 'TEST_PROJECT_KEY';
+      process.env.SQ_USERNAME = 'TEST_USERNAME';
+      process.env.SQ_PASSWORD = 'TEST_PASSWORD';
 
       collector.http.get = jasmine.createSpy().and.callFake(async (args) => new Promise(resolve => {
         resolve({
@@ -79,9 +79,9 @@ describe('SonarqubeCollector', () => {
       collector._argv = {
         'proj-dir': 'TEST_PROJECT_DIR',
       } as any;
-      process.env.KEY = 'TEST_PROJECT_KEY';
-      process.env.USERNAME = 'TEST_USERNAME';
-      process.env.PASSWORD = 'TEST_PASSWORD';
+      process.env.SQ_KEY = 'TEST_PROJECT_KEY';
+      process.env.SQ_USERNAME = 'TEST_USERNAME';
+      process.env.SQ_PASSWORD = 'TEST_PASSWORD';
       await expectAsync(collector.getResults({}))
         .toBeRejectedWith(new Error('You must specify authentication token in the config.'));
     });
@@ -90,18 +90,18 @@ describe('SonarqubeCollector', () => {
       collector._argv = {
         'proj-dir': 'TEST_PROJECT_DIR',
       } as any;
-      process.env.LOGIN = 'TEST_LOGIN';
-      process.env.USERNAME = 'TEST_USERNAME';
-      process.env.PASSWORD = 'TEST_PASSWORD';
+      process.env.SQ_LOGIN = 'TEST_SQ_LOGIN';
+      process.env.SQ_USERNAME = 'TEST_SQ_USERNAME';
+      process.env.SQ_PASSWORD = 'TEST_SQ_PASSWORD';
       await expectAsync(collector.getResults({}))
         .toBeRejectedWith(new Error('You must specify projectkey in the config.'));
     });
 
     it('should error when directory to scan is not specified', async () => {
-      process.env.LOGIN = 'TEST_LOGIN';
-      process.env.KEY = 'TEST_PROJECT_KEY';
-      process.env.USERNAME = 'TEST_USERNAME';
-      process.env.PASSWORD = 'TEST_PASSWORD';
+      process.env.SQ_LOGIN = 'TEST_LOGIN';
+      process.env.SQ_KEY = 'TEST_PROJECT_KEY';
+      process.env.SQ_USERNAME = 'TEST_USERNAME';
+      process.env.SQ_PASSWORD = 'TEST_PASSWORD';
       await expectAsync(collector.getResults({}))
         .toBeRejectedWith(new Error('You must specify a --proj-dir argument.'));
     });
@@ -110,9 +110,9 @@ describe('SonarqubeCollector', () => {
       collector._argv = {
         'proj-dir': 'TEST_PROJECT_DIR',
       } as any;
-      process.env.LOGIN = 'TEST_LOGIN';
-      process.env.KEY = 'TEST_PROJECT_KEY';
-      process.env.PASSWORD = 'TEST_PASSWORD';
+      process.env.SQ_LOGIN = 'TEST_LOGIN';
+      process.env.SQ_KEY = 'TEST_PROJECT_KEY';
+      process.env.SQ_PASSWORD = 'TEST_PASSWORD';
       await expectAsync(collector.getResults({}))
         .toBeRejectedWith(new Error('You must specify username in the config.'));
     });
@@ -121,9 +121,9 @@ describe('SonarqubeCollector', () => {
       collector._argv = {
         'proj-dir': 'TEST_PROJECT_DIR',
       } as any;
-      process.env.LOGIN = 'TEST_LOGIN';
-      process.env.KEY = 'TEST_PROJECT_KEY';
-      process.env.USERNAME = 'TEST_USERNAME';
+      process.env.SQ_LOGIN = 'TEST_LOGIN';
+      process.env.SQ_KEY = 'TEST_PROJECT_KEY';
+      process.env.SQ_USERNAME = 'TEST_USERNAME';
       await expectAsync(collector.getResults({}))
         .toBeRejectedWith(new Error('You must specify password in the config.'));
     });

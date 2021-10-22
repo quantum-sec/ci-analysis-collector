@@ -17,22 +17,22 @@ export class SonarqubeCollector extends AnalysisCollectorBase {
   }
 
   public override async getResults(options: any): Promise<IResult[]> {
-    const dsonarLogin = process.env.LOGIN;
+    const dsonarLogin = process.env.SQ_LOGIN;
     if (!dsonarLogin) {
       throw new Error('You must specify authentication token in the config.');
     }
 
-    const dsonarProjectKey = process.env.KEY;
+    const dsonarProjectKey = process.env.SQ_KEY;
     if (!dsonarProjectKey) {
       throw new Error('You must specify projectkey in the config.');
     }
 
-    const dsonarUsername = process.env.USERNAME;
+    const dsonarUsername = process.env.SQ_USERNAME;
     if (!dsonarUsername) {
       throw new Error('You must specify username in the config.');
     }
 
-    const dsonarPassword = process.env.PASSWORD;
+    const dsonarPassword = process.env.SQ_PASSWORD;
     if (!dsonarPassword) {
       throw new Error('You must specify password in the config.');
     }
@@ -49,8 +49,8 @@ export class SonarqubeCollector extends AnalysisCollectorBase {
     ];
     await this.spawn('sonar-scanner', args, options);
 
-    //  URL format should be in http://your-url-here:portno/api/issues/search?componentKeys=
-    const response = await this.http.get(process.env.URL + dsonarProjectKey, { withCredentials: true,
+    const response = await this.http.get(`http://${process.env.SQ_HOST}/api/issues/search?componentKeys=${dsonarProjectKey}`, {
+      withCredentials: true,
       auth: {
         username: dsonarUsername,
         password: dsonarPassword,
