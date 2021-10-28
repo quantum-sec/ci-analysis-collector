@@ -6,3 +6,4 @@ export * from './checkov';
 export * from './sonarqube';
 export * from './trivy';
 export * from './utils';
+export * from './zap';

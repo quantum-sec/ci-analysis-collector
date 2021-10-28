@@ -2,6 +2,7 @@
   "extends": "@quantum-sec/typescript-config",
   "compilerOptions": {
     "rootDir": "src",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "importHelpers": true
   }
 }
