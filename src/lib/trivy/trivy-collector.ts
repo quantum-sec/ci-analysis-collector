@@ -21,8 +21,14 @@ export class TrivyCollector extends AnalysisCollectorBase {
     }
 
     const args = ['--quiet', 'image', '--security-checks', 'vuln,config', '--exit-code', '0', '-f', 'json', '--light', imageName];
-    const output = await this.spawn('trivy', args, options);
 
+    let output;
+    try {
+      output = await this.spawn('trivy', args, options);
+    }
+    catch (e: unknown) {
+      throw new Error(`Error executing Trivy: ${e as string}`);
+    }
 
     this.logger.debug(JSON.stringify(output, null, 2));
 
@@ -31,6 +37,7 @@ export class TrivyCollector extends AnalysisCollectorBase {
   }
 
   public parseResults(output: string): IResult[] {
+
     const parsed = JSON.parse(output);
 
     const results = [];

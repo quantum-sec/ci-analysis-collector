@@ -177,18 +177,29 @@ export abstract class AnalysisCollectorBase {
     this.logger.debug([command, ...args].join(' '));
     this.logger.debug(options);
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const proc = cp.spawn(command, args, options);
       const chunks: string[] = [];
+      const errors: string[] = [];
 
       proc.stdout.on('data', (chunk) => {
         this.logger.debug(chunk);
         chunks.push(chunk);
       });
 
+      proc.stderr.on('data', (chunk) => {
+        this.logger.debug(chunk.toString());
+        errors.push(chunk.toString());
+      });
+
       proc.on('exit', (code) => {
         this.logger.debug(`${ command } exited with status code ${ code }`);
-        resolve(chunks.join('').trim());
+        if (code !== 0) {
+          reject(errors.join('').trim());
+        }
+        else {
+          resolve(chunks.join('').trim());
+        }
       });
     });
   }

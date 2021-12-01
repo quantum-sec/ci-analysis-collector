@@ -350,6 +350,10 @@ describe('AnalysisCollectorBase', () => {
       const results = await collector.spawn('echo');
       expect(results).toEqual('');
     });
+
+    it('should throw an error if the spawn command fails', async () => {
+      await expectAsync(collector.spawn('cat', ['non_existent_file'])).toBeRejected();
+    });
   });
 
   describe('getMaxLineNumberLength()', () => {

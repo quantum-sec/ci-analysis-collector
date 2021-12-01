@@ -7,12 +7,13 @@ describe('TrivyCollector', () => {
 
   let collector: TrivyCollector;
   let logger: Logger;
+  let theSpy;
 
   beforeEach(() => {
     logger = createLoggerFixture();
     collector = new TrivyCollector(logger);
 
-    spyOn(collector, 'spawn').and.returnValue(new Promise((resolve) => {
+    theSpy = spyOn(collector, 'spawn').and.returnValue(new Promise((resolve) => {
       resolve('TEST_OUTPUT');
     }));
   });
@@ -58,6 +59,17 @@ describe('TrivyCollector', () => {
 
       expect(collector.parseResults).toHaveBeenCalledTimes(1);
       expect(collector.parseResults).toHaveBeenCalledWith('TEST_OUTPUT');
+    });
+
+    it('should error when image cannot be found', async () => {
+      collector._argv = {
+        'image-name': 'TEST_IMAGE',
+      } as any;
+
+      theSpy.and.callThrough(); // this removes the return value in line 16
+
+      await expectAsync(collector.getResults({}))
+        .toBeRejected();
     });
     it('should error when image name is not specified', async () => {
       await expectAsync(collector.getResults({}))
