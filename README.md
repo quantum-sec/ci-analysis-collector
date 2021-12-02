@@ -60,6 +60,7 @@ are any of the following **optional** arguments:
 | [sonarqube](https://github.com/SonarSource/sonarqube) | SAST, DAST    | C / C++ / Objective-C<br />C#<br />Go<br />Java<br />JavaScript / TypeScript<br />Kotlin<br />PHP<br />Python<br />Ruby<br />Scala<br />Swift<br />Visual Basic | [quantumsec/docker-pipeline-sonarqube](https://hub.docker.com/repository/docker/quantumsec/docker-pipeline-sonarqube) |
 | [trivy](https://github.com/aquasecurity/trivy)                     | SAST          | Terraform<br />Dockerfile<br />Kubernetes                                                                                                                             | [quantumsec/docker-pipeline-trivy](https://hub.docker.com/repository/docker/quantumsec/docker-pipeline-trivy)     |
 | [tfsec](https://github.com/aquasecurity/tfsec)<br />_(Planned)_        | SAST          | Terraform                                                                                                                                                       | [quantumsec/docker-pipeline-tfsec](https://hub.docker.com/repository/docker/quantumsec/docker-pipeline-tfsec)         |
+| [ZAP](https://github.com/zaproxy/zaproxy)                     | SAST          | HTTP                                                | [quantumsec/docker-pipeline-zap](https://hub.docker.com/repository/docker/quantumsec/docker-pipeline-zap)     |
 
 
 ## Code of Conduct
