@@ -66,7 +66,7 @@ describe('TrivyCollector', () => {
         'image-name': 'TEST_IMAGE',
       } as any;
 
-      theSpy.and.callThrough(); // this removes the return value in line 16
+      theSpy.and.callThrough();
 
       await expectAsync(collector.getResults({}))
         .toBeRejected();
