@@ -86,4 +86,9 @@ export interface IResult {
    */
   packageVersion?: string;
 
+  /**
+   * The check method of the tool, e.g. get, post, etc.
+   */
+  checkMethod?: string;
+
 }
