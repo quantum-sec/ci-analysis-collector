@@ -66,10 +66,12 @@ describe('TrivyCollector', () => {
         'image-name': 'TEST_IMAGE',
       } as any;
 
-      theSpy.and.callThrough();
+      theSpy.and.returnValue(new Promise((resolve, reject) => {
+        reject('TEST_OUTPUT');
+      }));
 
       await expectAsync(collector.getResults({}))
-        .toBeRejected();
+        .toBeRejectedWith(new Error('Error executing Trivy: TEST_OUTPUT'));
     });
     it('should error when image name is not specified', async () => {
       await expectAsync(collector.getResults({}))
