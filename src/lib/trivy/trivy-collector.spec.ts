@@ -7,13 +7,12 @@ describe('TrivyCollector', () => {
 
   let collector: TrivyCollector;
   let logger: Logger;
-  let theSpy;
 
   beforeEach(() => {
     logger = createLoggerFixture();
     collector = new TrivyCollector(logger);
 
-    theSpy = spyOn(collector, 'spawn').and.returnValue(new Promise((resolve) => {
+    spyOn(collector, 'spawn').and.returnValue(new Promise((resolve) => {
       resolve('TEST_OUTPUT');
     }));
   });
@@ -65,8 +64,7 @@ describe('TrivyCollector', () => {
       collector._argv = {
         'image-name': 'TEST_IMAGE',
       } as any;
-
-      theSpy.and.returnValue(new Promise((resolve, reject) => {
+      (collector.spawn as any).and.returnValue(new Promise((resolve, reject) => {
         reject('TEST_OUTPUT');
       }));
 

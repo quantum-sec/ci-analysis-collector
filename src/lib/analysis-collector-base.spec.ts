@@ -4,6 +4,8 @@ import { IResult } from './result.interface';
 import { Logger } from './utils';
 import { chalkFunctionEqualityTester } from './utils/logger.spec';
 import chalk from 'chalk';
+import { mockSpawn, MockChildProcess } from 'spawn-mock';
+import cp from 'child_process';
 
 class ConcreteAnalysisCollector extends AnalysisCollectorBase {
   public async getToolVersion(options: any): Promise<string> {
@@ -352,8 +354,16 @@ describe('AnalysisCollectorBase', () => {
     });
 
     it('should throw an error if the spawn command fails', async () => {
-      await expectAsync(collector.spawn('cat', ['non_existent_file'])).toBeRejected();
+      const spawn = mockSpawn(function (mcp: MockChildProcess) {
+        mcp.stderr.write('ERROR');
+        mcp.stdout.write('DATA');
+        mcp.emit('exit', '1');
+        mcp.end();
+      });
+      spyOn(cp, 'spawn').and.callFake((command): any => spawn('echo', []));
+      await expectAsync(collector.spawn('echo')).toBeRejectedWith('ERROR');
     });
+
   });
 
   describe('getMaxLineNumberLength()', () => {
