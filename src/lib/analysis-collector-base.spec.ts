@@ -4,8 +4,10 @@ import { IResult } from './result.interface';
 import { Logger } from './utils';
 import { chalkFunctionEqualityTester } from './utils/logger.spec';
 import chalk from 'chalk';
-import { mockSpawn, MockChildProcess } from 'spawn-mock';
-import cp from 'child_process';
+import sinon from 'sinon';
+import events from 'events';
+import stream from 'stream';
+import cp, { ChildProcess } from 'child_process';
 
 class ConcreteAnalysisCollector extends AnalysisCollectorBase {
   public async getToolVersion(options: any): Promise<string> {
@@ -343,25 +345,51 @@ describe('AnalysisCollectorBase', () => {
   });
 
   describe('spawn', () => {
+    let sandbox: sinon.createSandbox;
+    let proc: ChildProcess;
+
+    beforeEach(() => {
+      proc = (new events.EventEmitter()) as ChildProcess;
+      proc.stdin = new stream.Writable();
+      proc.stdout = (new events.EventEmitter()) as stream.Readable;
+      proc.stderr = (new events.EventEmitter()) as stream.Readable;
+      sandbox = sinon.createSandbox();
+      sandbox.stub(cp, 'spawn')
+        .returns(proc)
+        .calledOnceWith('foo', ['--bar'], {});
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
     it('should return the stdout stream of the supplied command', async () => {
-      const results = await collector.spawn('echo', ['TEST']);
-      expect(results).toEqual('TEST');
+      const stdout = 'bar';
+
+      const process = collector.spawn('foo', ['bar']);
+      proc.stdout.emit('data', stdout);
+      proc.emit('exit', 0);
+      await expectAsync(process).toBeResolvedTo(stdout);
     });
 
     it('should not require arguments to be passed', async () => {
-      const results = await collector.spawn('echo');
-      expect(results).toEqual('');
+      const stdout = 'Output';
+
+      const process = collector.spawn('foo');
+      proc.stdout.emit('data', stdout);
+      proc.emit('exit', 0);
+      await expectAsync(process).toBeResolvedTo(stdout);
     });
 
     it('should throw an error if the spawn command fails', async () => {
-      const spawn = mockSpawn(function (mcp: MockChildProcess) {
-        mcp.stderr.write('ERROR');
-        mcp.stdout.write('DATA');
-        mcp.emit('exit', '1');
-        mcp.end();
-      });
-      spyOn(cp, 'spawn').and.callFake((command): any => spawn('echo', []));
-      await expectAsync(collector.spawn('echo')).toBeRejectedWith('ERROR');
+      const stdout = 'Output';
+      const stderr = 'ERROR';
+
+      const process = collector.spawn('foo');
+      proc.stderr.emit('data', stderr);
+      proc.stdout.emit('data', stdout);
+      proc.emit('exit', 1);
+      await expectAsync(process).toBeRejectedWith(stderr);
     });
 
   });
