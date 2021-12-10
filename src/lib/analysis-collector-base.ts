@@ -195,10 +195,10 @@ export abstract class AnalysisCollectorBase {
       proc.on('exit', (code) => {
         this.logger.debug(`${ command } exited with status code ${ code }`);
         if (code !== 0) {
-          reject(errors.join('').trim());
+          reject(errors.join('\n').trim());
         }
         else {
-          resolve(chunks.join('').trim());
+          resolve(chunks.join('\n').trim());
         }
       });
     });
