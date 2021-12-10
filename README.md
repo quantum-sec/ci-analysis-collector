@@ -17,7 +17,7 @@ This utility can be modified to be used with your own aggregation and analysis p
 ## Prerequisites
 
 This utility requires [Node.js](https://nodejs.org/en/download/) and [git](https://git-scm.com/downloads). Additionally,
-you must install any tools you wish to use that are wrapped by this utility – each of which will have its own
+you must install any tools you wish to use that are wrapped by this utility – each of which will have its own
 dependencies. Alternatively, Quantum supplies Docker containers for each of the officially supported tools.
 
 ## Usage
@@ -40,16 +40,16 @@ are any of the following **optional** arguments:
 
 - `--path [path]` – the path to source code being analyzed (default: `"$PWD"`)
 - `--soft-fail` – when specified a zero exit code will be returned regardless of whether or not checks are failing (default: `false`)
-- `--quiet` – when specified, passing checks will be excluded from the printed output (default: `false`)
-- `--log-level [LEVEL]` – the log verbosity (one of `error`, `warning`, `info`, or `debug`) (default: `info`)
-- `--webhook-url [URL]` – the URL to which results will be `PUT` (defaults to the Quantum Platform webhook)
+- `--quiet` – when specified, passing checks will be excluded from the printed output (default: `false`)
+- `--log-level [LEVEL]` – the log verbosity (one of `error`, `warning`, `info`, or `debug`) (default: `info`)
+- `--webhook-url [URL]` – the URL to which results will be `PUT` (defaults to the Quantum Platform webhook)
 
 ### Environment Variables
 
-- `QS_API_TOKEN` – the API token associated with this analysis collection generated in the [Quantum Security Console](https://console.prod.platform.quantum.security/)
-- `QS_COLLECTOR_SOFT_FAIL` – same as the `--soft-fail` argument above
-- `QS_COLLECTOR_QUIET` – same as the `--quiet` argument above
-- `QS_COLLECTOR_WEBHOOK_URL` – same as the `--webhook-url` argument above
+- `QS_API_TOKEN` – the API token associated with this analysis collection generated in the [Quantum Security Console](https://console.prod.platform.quantum.security/)
+- `QS_COLLECTOR_SOFT_FAIL` – same as the `--soft-fail` argument above
+- `QS_COLLECTOR_QUIET` – same as the `--quiet` argument above
+- `QS_COLLECTOR_WEBHOOK_URL` – same as the `--webhook-url` argument above
 
 
 ## Supported Tools
