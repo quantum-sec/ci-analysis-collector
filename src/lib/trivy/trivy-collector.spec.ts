@@ -59,6 +59,18 @@ describe('TrivyCollector', () => {
       expect(collector.parseResults).toHaveBeenCalledTimes(1);
       expect(collector.parseResults).toHaveBeenCalledWith('TEST_OUTPUT');
     });
+
+    it('should error when image cannot be found', async () => {
+      collector._argv = {
+        'image-name': 'TEST_IMAGE',
+      } as any;
+      (collector.spawn as any).and.returnValue(new Promise((resolve, reject) => {
+        reject('TEST_OUTPUT');
+      }));
+
+      await expectAsync(collector.getResults({}))
+        .toBeRejectedWith(new Error('Error executing Trivy: TEST_OUTPUT'));
+    });
     it('should error when image name is not specified', async () => {
       await expectAsync(collector.getResults({}))
         .toBeRejectedWith(new Error('You must specify an --image-name argument.'));
