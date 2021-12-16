@@ -47,7 +47,12 @@ export class SonarqubeCollector extends AnalysisCollectorBase {
       `-Dsonar.projectKey=${dsonarProjectKey}`,
       `-Dsonar.projectBaseDir=${dsonarProjectBaseDir}`,
     ];
-    await this.spawn('sonar-scanner', args, options);
+    try {
+      await this.spawn('sonar-scanner', args, options);
+    }
+    catch (e: unknown) {
+      throw new Error(`Error executing Sonarqube: ${e as string}`);
+    }
 
     const response = await this.http.get(`http://${process.env.SQ_HOST}/api/issues/search?componentKeys=${dsonarProjectKey}`, {
       withCredentials: true,

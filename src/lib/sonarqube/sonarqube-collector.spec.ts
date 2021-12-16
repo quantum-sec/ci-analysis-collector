@@ -73,6 +73,13 @@ describe('SonarqubeCollector', () => {
 
       expect(collector.parseResults).toHaveBeenCalledTimes(1);
       expect(collector.parseResults).toHaveBeenCalledWith('"TEST_OUTPUT"');
+
+      (collector.spawn as any).and.returnValue(new Promise((resolve, reject) => {
+        reject('TEST_OUTPUT');
+      }));
+
+      await expectAsync(collector.getResults({}))
+        .toBeRejectedWith(new Error('Error executing Sonarqube: TEST_OUTPUT'));
     });
 
     it('should error when authentication token is not specified', async () => {

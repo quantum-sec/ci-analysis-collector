@@ -23,7 +23,13 @@ export class ZapCollector extends AnalysisCollectorBase {
     }
 
     const args = ['-t', targetName, '-J zapreport.json', '-s'];
-    const output = await this.spawn('zap-full-scan.py', args, options);
+    let output;
+    try {
+      output = await this.spawn('zap-full-scan.py', args, options);
+    }
+    catch (e: unknown) {
+      throw new Error(`Error executing Zap: ${e as string}`);
+    }
 
 
     const jsonFileContents: string = this.fs.readFileSync('zapreport.json', 'utf8');

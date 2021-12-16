@@ -46,6 +46,14 @@ describe('CheckovCollector', () => {
       expect(collector.parseResults).toHaveBeenCalledTimes(1);
       expect(collector.parseResults).toHaveBeenCalledWith('TEST_OUTPUT');
     });
+    it('should error when arguments fail', async () => {
+      (collector.spawn as any).and.returnValue(new Promise((resolve, reject) => {
+        reject('TEST_OUTPUT');
+      }));
+
+      await expectAsync(collector.getResults({}))
+        .toBeRejectedWith(new Error('Error executing Checkov: TEST_OUTPUT'));
+    });
   });
 
   describe('parseResults()', () => {
