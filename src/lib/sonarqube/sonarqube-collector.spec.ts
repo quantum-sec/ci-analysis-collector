@@ -74,6 +74,17 @@ describe('SonarqubeCollector', () => {
       expect(collector.parseResults).toHaveBeenCalledTimes(1);
       expect(collector.parseResults).toHaveBeenCalledWith('"TEST_OUTPUT"');
 
+    });
+
+    it('should error when arguments fail', async () => {
+      collector._argv = {
+        'proj-dir': 'TEST_PROJECT_DIR',
+      } as any;
+      process.env.SQ_KEY = 'TEST_PROJECT_KEY';
+      process.env.SQ_LOGIN = 'TEST_SQ_LOGIN';
+      process.env.SQ_USERNAME = 'TEST_SQ_USERNAME';
+      process.env.SQ_PASSWORD = 'TEST_SQ_PASSWORD';
+
       (collector.spawn as any).and.returnValue(new Promise((resolve, reject) => {
         reject('TEST_OUTPUT');
       }));
