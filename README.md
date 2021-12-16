@@ -17,7 +17,7 @@ This utility can be modified to be used with your own aggregation and analysis p
 ## Prerequisites
 
 This utility requires [Node.js](https://nodejs.org/en/download/) and [git](https://git-scm.com/downloads). Additionally,
-you must install any tools you wish to use that are wrapped by this utility – each of which will have its own
+you must install any tools you wish to use that are wrapped by this utility – each of which will have its own
 dependencies. Alternatively, Quantum supplies Docker containers for each of the officially supported tools.
 
 ## Usage
@@ -40,27 +40,27 @@ are any of the following **optional** arguments:
 
 - `--path [path]` – the path to source code being analyzed (default: `"$PWD"`)
 - `--soft-fail` – when specified a zero exit code will be returned regardless of whether or not checks are failing (default: `false`)
-- `--quiet` – when specified, passing checks will be excluded from the printed output (default: `false`)
-- `--log-level [LEVEL]` – the log verbosity (one of `error`, `warning`, `info`, or `debug`) (default: `info`)
-- `--webhook-url [URL]` – the URL to which results will be `PUT` (defaults to the Quantum Platform webhook)
+- `--quiet` – when specified, passing checks will be excluded from the printed output (default: `false`)
+- `--log-level [LEVEL]` – the log verbosity (one of `error`, `warning`, `info`, or `debug`) (default: `info`)
+- `--webhook-url [URL]` – the URL to which results will be `PUT` (defaults to the Quantum Platform webhook)
 
 ### Environment Variables
 
-- `QS_API_TOKEN` – the API token associated with this analysis collection generated in the [Quantum Security Console](https://console.prod.platform.quantum.security/)
-- `QS_COLLECTOR_SOFT_FAIL` – same as the `--soft-fail` argument above
-- `QS_COLLECTOR_QUIET` – same as the `--quiet` argument above
-- `QS_COLLECTOR_WEBHOOK_URL` – same as the `--webhook-url` argument above
+- `QS_API_TOKEN` – the API token associated with this analysis collection generated in the [Quantum Security Console](https://console.prod.platform.quantum.security/)
+- `QS_COLLECTOR_SOFT_FAIL` – same as the `--soft-fail` argument above
+- `QS_COLLECTOR_QUIET` – same as the `--quiet` argument above
+- `QS_COLLECTOR_WEBHOOK_URL` – same as the `--webhook-url` argument above
 
 
 ## Supported Tools
 
 | Tool                                                                   | Analysis Type | Platforms / Languages                                                                                                                                           | Container Runtime                                                                                                     |
 |------------------------------------------------------------------------|---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
-| [checkov](https://github.com/bridgecrewio/checkov)                     | SAST          | Terraform<br />CloudFormation<br />ARM Templates<br />Dockerfile<br />Kubernetes                                                                                | [quantumsec/docker-pipeline-checkov](https://hub.docker.com/repository/docker/quantumsec/docker-pipeline-checkov)     |
-| [sonarqube](https://github.com/SonarSource/sonarqube) | SAST, DAST    | C / C++ / Objective-C<br />C#<br />Go<br />Java<br />JavaScript / TypeScript<br />Kotlin<br />PHP<br />Python<br />Ruby<br />Scala<br />Swift<br />Visual Basic | [quantumsec/docker-pipeline-sonarqube](https://hub.docker.com/repository/docker/quantumsec/docker-pipeline-sonarqube) |
-| [trivy](https://github.com/aquasecurity/trivy)                     | SAST          | Terraform<br />Dockerfile<br />Kubernetes                                                                                                                             | [quantumsec/docker-pipeline-trivy](https://hub.docker.com/repository/docker/quantumsec/docker-pipeline-trivy)     |
-| [tfsec](https://github.com/aquasecurity/tfsec)<br />_(Planned)_        | SAST          | Terraform                                                                                                                                                       | [quantumsec/docker-pipeline-tfsec](https://hub.docker.com/repository/docker/quantumsec/docker-pipeline-tfsec)         |
-| [ZAP](https://github.com/zaproxy/zaproxy)                     | SAST          | HTTP                                                | [quantumsec/docker-pipeline-zap](https://hub.docker.com/repository/docker/quantumsec/docker-pipeline-zap)     |
+| [checkov](https://github.com/bridgecrewio/checkov)                     | SAST          | Terraform<br />CloudFormation<br />ARM Templates<br />Dockerfile<br />Kubernetes                                                                                | [quantumsec/docker-pipeline-checkov](https://hub.docker.com/r/quantumsec/docker-pipeline-checkov)     |
+| [sonarqube](https://github.com/SonarSource/sonarqube) | SAST, DAST    | C / C++ / Objective-C<br />C#<br />Go<br />Java<br />JavaScript / TypeScript<br />Kotlin<br />PHP<br />Python<br />Ruby<br />Scala<br />Swift<br />Visual Basic | [quantumsec/docker-pipeline-sonarqube](https://hub.docker.com/r/quantumsec/docker-pipeline-sonarqube) |
+| [trivy](https://github.com/aquasecurity/trivy)                     | SAST          | Terraform<br />Dockerfile<br />Kubernetes                                                                                                                             | [quantumsec/docker-pipeline-trivy](https://hub.docker.com/r/quantumsec/docker-pipeline-trivy)     |
+| [tfsec](https://github.com/aquasecurity/tfsec)<br />_(Planned)_        | SAST          | Terraform                                                                                                                                                       | [quantumsec/docker-pipeline-tfsec](https://hub.docker.com/r/quantumsec/docker-pipeline-tfsec)         |
+| [ZAP](https://github.com/zaproxy/zaproxy)                     | SAST          | HTTP                                                | [quantumsec/docker-pipeline-zap](https://hub.docker.com/r/quantumsec/docker-pipeline-zap)     |
 
 
 ## Code of Conduct
