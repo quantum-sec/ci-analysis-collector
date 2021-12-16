@@ -17,7 +17,13 @@ export class CheckovCollector extends AnalysisCollectorBase {
   public override async getResults(options: any): Promise<IResult[]> {
     // Once we develop custom checks, they should be specified using the --external-checks-git argument.
     const args = ['--directory', '.', '--output', 'json', '--no-guide', '--soft-fail'];
-    const output = await this.spawn('checkov', args, options);
+    let output;
+    try {
+      output = await this.spawn('checkov', args, options);
+    }
+    catch (e: unknown) {
+      throw new Error(`Error executing Checkov: ${e as string}`);
+    }
 
     this.logger.debug(JSON.stringify(output, null, 2));
 

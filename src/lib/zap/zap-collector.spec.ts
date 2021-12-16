@@ -60,6 +60,17 @@ describe('ZapCollector', () => {
       await expectAsync(collector.getResults({}))
         .toBeRejectedWith(new Error('You must specify an --target-name argument.'));
     });
+    it('should error when target name cannot be found', async () => {
+      collector._argv = {
+        'target-name': 'TEST_TARGET',
+      } as any;
+      (collector.spawn as any).and.returnValue(new Promise((resolve, reject) => {
+        reject('TEST_OUTPUT');
+      }));
+
+      await expectAsync(collector.getResults({}))
+        .toBeRejectedWith(new Error('Error executing Zap: TEST_OUTPUT'));
+    });
 
   });
 
