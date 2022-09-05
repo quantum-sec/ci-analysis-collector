@@ -18,6 +18,8 @@ export class CheckovCollector extends AnalysisCollectorBase {
     // Once we develop custom checks, they should be specified using the --external-checks-git argument.
     const args = ['--directory', '.', '--output', 'json', '--no-guide', '--soft-fail'];
     let output;
+    let results = [];
+
     try {
       output = await this.spawn('checkov', args, options);
     }
@@ -25,9 +27,15 @@ export class CheckovCollector extends AnalysisCollectorBase {
       throw new Error(`Error executing Checkov: ${e as string}`);
     }
 
-    this.logger.debug(JSON.stringify(output, null, 2));
+    try {
+      this.logger.debug(JSON.stringify(output, null, 2));
+      results = this.parseResults(output);
+    }
+    catch (e: unknown) {
+      throw new Error(`Unable to parse checkov output: ${e as string}`);
+    }
 
-    return this.parseResults(output);
+    return results;
   }
 
   public parseResults(output: string): IResult[] {

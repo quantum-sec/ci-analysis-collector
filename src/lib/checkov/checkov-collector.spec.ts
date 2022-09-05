@@ -46,6 +46,7 @@ describe('CheckovCollector', () => {
       expect(collector.parseResults).toHaveBeenCalledTimes(1);
       expect(collector.parseResults).toHaveBeenCalledWith('TEST_OUTPUT');
     });
+
     it('should error when arguments fail', async () => {
       (collector.spawn as any).and.returnValue(new Promise((resolve, reject) => {
         reject('TEST_OUTPUT');
@@ -53,6 +54,15 @@ describe('CheckovCollector', () => {
 
       await expectAsync(collector.getResults({}))
         .toBeRejectedWith(new Error('Error executing Checkov: TEST_OUTPUT'));
+    });
+
+    it('should error when checkov output is not a valid json', async () => {
+      (collector.spawn as any).and.returnValue(new Promise((resolve, reject) => {
+        resolve('<invalid_json>');
+      }));
+
+      await expectAsync(collector.getResults({}))
+        .toBeRejectedWith(new Error('Unable to parse checkov output: SyntaxError: Unexpected token < in JSON at position 0'));
     });
   });
 
